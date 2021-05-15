@@ -1,11 +1,12 @@
 import { useRouteData } from "remix";
+import db from "../../db";
 
 import stylesUrl from "../styles/index.css";
 
 export function meta() {
   return {
     title: "Remix Starter",
-    description: "Welcome to remix!"
+    description: "Welcome to remix!",
   };
 }
 
