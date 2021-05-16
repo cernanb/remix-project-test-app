@@ -4,16 +4,21 @@ import db from "../../../db";
 
 export function headers({ loaderHeaders, parentHeaders }) {
   return {
-    "Cache-Control": "max-age=60, s-maxage=60",
+    "Cache-Control": loaderHeaders.get("Cache-Control"),
   };
 }
 
-export function loader({ params }) {
-  return db.project.findUnique({
+export async function loader({ params }) {
+  const project = await db.project.findUnique({
     where: {
       id: +params.id,
     },
   });
+  let res = new Response(JSON.stringify(project), {
+    headers: { "Content-Type": "application/json" },
+  });
+  res.headers.set("Cache-Control", "max-age=60");
+  return res;
 }
 
 export default function ProjectShow() {
@@ -31,13 +36,13 @@ export default function ProjectShow() {
             type="button"
             className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Edit
+            Delete
           </button>
           <button
             type="button"
             className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
-            Publish
+            Complete
           </button>
         </div>
       </div>
