@@ -22,10 +22,13 @@ model Project {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  name     String?
-  projects Project[]
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  name         String?
+  projects     Project[]
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Task {
