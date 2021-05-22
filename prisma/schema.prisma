@@ -29,6 +29,7 @@ model User {
   passwordHash String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  sessions     Session[]
 }
 
 model Task {
@@ -37,4 +38,10 @@ model Task {
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
   complete  Boolean
+}
+
+model Session {
+  id     String @id @default(uuid())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
 }
