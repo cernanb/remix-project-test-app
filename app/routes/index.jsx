@@ -17,7 +17,6 @@ export function links() {
 
 export function loader({ request }) {
   return requireUserSession(request, (session) => {
-    console.log(session);
     return { message: "this is awesome 😎" };
   });
 }

@@ -91,7 +91,6 @@ export async function loader({ request }) {
 
 export default function Signup() {
   const session = useRouteData();
-  console.log(session);
   return (
     <div className="min-h-screen w-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

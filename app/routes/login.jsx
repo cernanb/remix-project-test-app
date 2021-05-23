@@ -42,6 +42,7 @@ export async function loader({ request }) {
       password: session.get("password"),
       emailError: session.get("emailError"),
       passwordError: session.get("passwordError"),
+      message: session.get("message"),
     },
     {
       headers: {
@@ -53,11 +54,22 @@ export async function loader({ request }) {
 
 export default function Login() {
   const session = useRouteData();
-  console.log(session);
   return (
     <div className="min-h-screen w-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
+          {session.message && (
+            <div className="relative bg-indigo-600 rounded-md">
+              <div className="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+                <div className="pr-16 sm:text-center sm:px-16">
+                  <p className="font-medium text-white">
+                    <span className="md:hidden">{session.message}</span>
+                    <span className="hidden md:inline">{session.message}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>

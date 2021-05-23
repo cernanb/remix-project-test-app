@@ -6,6 +6,7 @@ import {
   LiveReload,
   json,
   useSubmit,
+  Form,
 } from "remix";
 import { Outlet } from "react-router-dom";
 import { Fragment, useState } from "react";
@@ -16,6 +17,7 @@ import {
   HomeIcon,
   MapIcon,
   MenuIcon,
+  LogoutIcon,
   SearchCircleIcon,
   SpeakerphoneIcon,
   UserGroupIcon,
@@ -188,7 +190,24 @@ export default function App() {
                           {item.name}
                         </Link>
                       ))}
-                      <Link to="/logout">Logout</Link>
+                      <Form method="post" action="/logout">
+                        <Link
+                          className={classNames(
+                            "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                          )}
+                          to="/logout"
+                        >
+                          <LogoutIcon
+                            className={classNames(
+                              "text-gray-400 group-hover:text-gray-500",
+                              "mr-4 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          Logout
+                        </Link>
+                      </Form>
                     </div>
                   </nav>
                 </div>
@@ -257,7 +276,24 @@ export default function App() {
                           {item.name}
                         </Link>
                       ))}
-                      <Link to="/logout">Logout</Link>
+                      <Form method="post" action="/logout">
+                        <button
+                          type="submit"
+                          className={classNames(
+                            "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          )}
+                        >
+                          <LogoutIcon
+                            className={classNames(
+                              "text-gray-400 group-hover:text-gray-500",
+                              "mr-4 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          Logout
+                        </button>
+                      </Form>
                     </div>
                   ) : (
                     <div className="px-2 space-y-1">
