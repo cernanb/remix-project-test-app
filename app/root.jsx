@@ -1,4 +1,12 @@
-import { Meta, Links, Scripts, useRouteData, LiveReload } from "remix";
+import {
+  Meta,
+  Links,
+  Scripts,
+  useRouteData,
+  LiveReload,
+  json,
+  useSubmit,
+} from "remix";
 import { Outlet } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
@@ -15,14 +23,25 @@ import {
 } from "@heroicons/react/outline";
 
 import { ClipboardCheckIcon } from "@heroicons/react/solid";
+import {
+  getSession,
+  commitSession,
+  requireUserSession,
+  getUserSession,
+} from "./session";
 
-const navigation = [
+const loggedInNavigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon, current: false },
   { name: "Projects", href: "/projects", icon: CalendarIcon, current: false },
   { name: "Teams", href: "#", icon: UserGroupIcon, current: false },
   { name: "Directory", href: "#", icon: SearchCircleIcon, current: false },
   { name: "Announcements", href: "#", icon: SpeakerphoneIcon, current: false },
   { name: "Office Map", href: "#", icon: MapIcon, current: false },
+];
+
+const loggedOutNavigation = [
+  { name: "Sign Up", href: "/signup", icon: HomeIcon, current: false },
+  { name: "Log In", href: "/login", icon: CalendarIcon, current: false },
 ];
 
 function classNames(...classes) {
@@ -39,8 +58,9 @@ export function links() {
   ];
 }
 
-export function loader() {
-  return { date: new Date() };
+export async function loader({ request }) {
+  let userSession = await getUserSession(request);
+  return json({ userSession });
 }
 
 function Document({ children }) {
@@ -63,8 +83,8 @@ function Document({ children }) {
 }
 
 export default function App() {
-  let data = useRouteData();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { userSession } = useRouteData();
 
   return (
     <Document>
@@ -145,7 +165,7 @@ export default function App() {
                   </div>
                   <nav aria-label="Sidebar" className="mt-5">
                     <div className="px-2 space-y-1">
-                      {navigation.map((item) => (
+                      {loggedInNavigation.map((item) => (
                         <Link
                           key={item.name}
                           to={item.href}
@@ -168,6 +188,7 @@ export default function App() {
                           {item.name}
                         </Link>
                       ))}
+                      <Link to="/logout">Logout</Link>
                     </div>
                   </nav>
                 </div>
@@ -211,31 +232,60 @@ export default function App() {
                   <h2 className="text-2xl">Get Stuff Done</h2>
                 </div>
                 <nav className="mt-5 flex-1" aria-label="Sidebar">
-                  <div className="px-2 space-y-1">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-200 text-gray-900"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                          "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                        )}
-                      >
-                        <item.icon
+                  {userSession ? (
+                    <div className="px-2 space-y-1">
+                      {loggedInNavigation.map((item) => (
+                        <Link
+                          key={item.name}
+                          to={item.href}
                           className={classNames(
                             item.current
-                              ? "text-gray-500"
-                              : "text-gray-400 group-hover:text-gray-500",
-                            "mr-3 h-6 w-6"
+                              ? "bg-gray-200 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                           )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
+                        >
+                          <item.icon
+                            className={classNames(
+                              item.current
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
+                              "mr-3 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </Link>
+                      ))}
+                      <Link to="/logout">Logout</Link>
+                    </div>
+                  ) : (
+                    <div className="px-2 space-y-1">
+                      {loggedOutNavigation.map((item) => (
+                        <Link
+                          key={item.name}
+                          to={item.href}
+                          className={classNames(
+                            item.current
+                              ? "bg-gray-200 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          )}
+                        >
+                          <item.icon
+                            className={classNames(
+                              item.current
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
+                              "mr-3 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </nav>
               </div>
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">

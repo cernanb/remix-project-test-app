@@ -29,7 +29,6 @@ export let action = async ({ request, params }) => {
       break;
     }
     case "put": {
-      console.log(body.get("complete"));
       await db.task.update({
         where: {
           id: +body.get("id"),
@@ -64,7 +63,6 @@ export default function ProjectShow() {
   const ref = useRef(null);
   useEffect(() => {
     if (pendingFormSubmit) {
-      console.log("submitting");
       if (ref.current) ref.current.value = "";
     }
   }, [pendingFormSubmit]);

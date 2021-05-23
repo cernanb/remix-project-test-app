@@ -1,5 +1,6 @@
 import { useRouteData } from "remix";
 import db from "../../db";
+import { requireUserSession } from "../session";
 
 import stylesUrl from "../styles/index.css";
 
@@ -14,8 +15,11 @@ export function links() {
   return [{ rel: "stylesheet", href: stylesUrl }];
 }
 
-export function loader() {
-  return { message: "this is awesome 😎" };
+export function loader({ request }) {
+  return requireUserSession(request, (session) => {
+    console.log(session);
+    return { message: "this is awesome 😎" };
+  });
 }
 
 export default function Index() {

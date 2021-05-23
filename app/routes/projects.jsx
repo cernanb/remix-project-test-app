@@ -4,9 +4,12 @@ import { useRouteData, Form } from "remix";
 import { Outlet, Link } from "react-router-dom";
 import { BriefcaseIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
+import { requireUserSession } from "../session";
 
-export function loader() {
-  return db.project.findMany();
+export function loader({ request }) {
+  return requireUserSession(request, (userSession) => {
+    return db.project.findMany();
+  });
 }
 
 export default function Projects() {
