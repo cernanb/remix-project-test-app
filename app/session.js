@@ -26,7 +26,7 @@ export async function requireUserSession(request, next) {
   let session = await getSession(request.headers.get("Cookie"));
   let sessionId = session.get("sessionId");
   let userSession = await prisma.session.findUnique({
-    where: { id: sessionId },
+    where: { id: sessionId || " " },
   });
   if (!userSession) {
     return redirect("/login", {

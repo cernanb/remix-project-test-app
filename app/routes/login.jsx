@@ -1,7 +1,9 @@
 import React from "react";
-import { LockClosedIcon } from "@heroicons/react/solid";
+import { LockClosedIcon, XIcon } from "@heroicons/react/solid";
 import { commitSession, getSession } from "../session";
 import { Form, json, redirect, useRouteData } from "remix";
+import db from "../../db";
+import { bcrypt } from "../crypto";
 
 export async function action({ request }) {
   let body = Object.fromEntries(new URLSearchParams(await request.text()));
@@ -26,12 +28,38 @@ export async function action({ request }) {
     });
   }
 
-  session.set("user", "foo");
-  return redirect("/", {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        email: body.email,
+      },
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!(await bcrypt.compare(body.password, user.passwordHash))) {
+      throw new Error("Incorrect password");
+    }
+    let dbSession = await db.session.create({
+      data: {
+        userId: user.id,
+      },
+    });
+    session.set("sessionId", dbSession.id);
+    return redirect("/", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  } catch (error) {
+    console.error(error.message);
+    session.flash("error", error.message);
+    return redirect("/login", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
 }
 
 export async function loader({ request }) {
@@ -43,6 +71,7 @@ export async function loader({ request }) {
       emailError: session.get("emailError"),
       passwordError: session.get("passwordError"),
       message: session.get("message"),
+      error: session.get("error"),
     },
     {
       headers: {
@@ -124,6 +153,18 @@ export default function Login() {
               />
             </div>
           </div>
+          <ul>
+            {session.error && (
+              <li class="flex items-center py-1">
+                <div className="bg-red-200 text-red-70 rounded-full p-1 fill-current ">
+                  <XIcon className="h-4 w-4" />
+                </div>
+                <span className="text-red-700 font-medium text-sm ml-3">
+                  {session.error}
+                </span>
+              </li>
+            )}
+          </ul>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -144,7 +185,7 @@ export default function Login() {
             <div className="text-sm">
               <a
                 href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="font-medium text-blue-600 hover:text-blue-500"
               >
                 Forgot your password?
               </a>
@@ -154,11 +195,11 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300"
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 <LockClosedIcon
-                  className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                  className="h-5 w-5 text-blue-500 group-hover:text-blue-400"
                   aria-hidden="true"
                 />
               </span>

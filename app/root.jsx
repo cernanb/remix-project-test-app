@@ -5,7 +5,6 @@ import {
   useRouteData,
   LiveReload,
   json,
-  useSubmit,
   Form,
 } from "remix";
 import { Outlet } from "react-router-dom";
@@ -174,7 +173,7 @@ export default function App() {
                           className={classNames(
                             item.current
                               ? "bg-gray-100 text-gray-900"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                              : "text-gray-600 hover:bg-yellow-300 hover:text-gray-900",
                             "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                           )}
                         >
@@ -247,8 +246,8 @@ export default function App() {
             <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-gray-100">
               <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                 <div className="flex items-center flex-shrink-0 px-4">
-                  <ClipboardCheckIcon className="h-10 w-10 text-green-700" />
-                  <h2 className="text-2xl">Get Stuff Done</h2>
+                  <ClipboardCheckIcon className="h-10 w-10 text-blue-400" />
+                  <h2 className="text-2xl text-yellow-400">Get Stuff Done</h2>
                 </div>
                 <nav className="mt-5 flex-1" aria-label="Sidebar">
                   {userSession ? (
@@ -260,7 +259,7 @@ export default function App() {
                           className={classNames(
                             item.current
                               ? "bg-gray-200 text-gray-900"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                              : "text-gray-600 hover:bg-yellow-300 hover:text-blue-400",
                             "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                           )}
                         >
@@ -268,7 +267,7 @@ export default function App() {
                             className={classNames(
                               item.current
                                 ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
+                                : "text-gray-400 group-hover:text-blue-400",
                               "mr-3 h-6 w-6"
                             )}
                             aria-hidden="true"
@@ -280,14 +279,14 @@ export default function App() {
                         <button
                           type="submit"
                           className={classNames(
-                            "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                            "text-gray-600 hover:bg-gray-50 hover:text-blue-400",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full hover:bg-yellow-300"
                           )}
                         >
                           <LogoutIcon
                             className={classNames(
                               "text-gray-400 group-hover:text-gray-500",
-                              "mr-4 h-6 w-6"
+                              "mr-4 h-6 w-6 group-hover:text-blue-400"
                             )}
                             aria-hidden="true"
                           />
