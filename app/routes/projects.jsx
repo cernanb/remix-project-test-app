@@ -5,6 +5,7 @@ import { Outlet, Link } from "react-router-dom";
 import { BriefcaseIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
 import { requireUserSession } from "../session";
+import { useLocation } from "react-router-dom";
 
 export function loader({ request }) {
   return requireUserSession(request, (userSession) => {
@@ -14,6 +15,8 @@ export function loader({ request }) {
 
 export default function Projects() {
   const projects = useRouteData();
+  const location = useLocation();
+  console.log(location);
 
   return (
     <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
@@ -40,7 +43,7 @@ export default function Projects() {
                         <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                           <div className="truncate">
                             <div className="flex text-sm">
-                              <p className="font-medium text-green-600 truncate">
+                              <p className="font-medium text-blue-500 truncate">
                                 {project.title}
                               </p>
                             </div>
@@ -88,7 +91,7 @@ export default function Projects() {
                     type="text"
                     name="title"
                     id="title"
-                    className="shadow-sm focus:ring-gray-500 focus:border-gray-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-yellow-400 focus:border-yellow-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     placeholder="New Project Title..."
                     aria-describedby="email-description"
                   />
